@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Register - Todo App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="text-center">Login</h3>
+                <form method="POST" action="/auth/register">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="cpassword" name="cpassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign up</button>
+                    <a href="{{ url_for('login') }}">Already have an account?</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

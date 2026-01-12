@@ -1,0 +1,8 @@
+.todo-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.priority-1 { border-left: 6px solid #dc3545; }
+.priority-3 { border-left: 6px solid #ffc107; }
+.priority-5 { border-left: 6px solid #198754; }

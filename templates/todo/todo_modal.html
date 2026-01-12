@@ -1,0 +1,47 @@
+<div class="modal fade" id="todoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="todo-form" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Todo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="todo-id">
+
+        <div class="mb-2">
+          <label>Title</label>
+          <input class="form-control" id="title" required>
+        </div>
+
+        <div class="mb-2">
+          <label>Description</label>
+          <textarea class="form-control" id="description"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label>Priority</label>
+            <select class="form-select" id="priority">
+              <option value="1">High</option>
+              <option value="3" selected>Medium</option>
+              <option value="5">Low</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Due Date</label>
+            <input type="date" class="form-control" id="due_date">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" type="submit">
+          <span id="save-text">Save</span>
+          <span class="spinner-border spinner-border-sm d-none" id="save-spinner"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
