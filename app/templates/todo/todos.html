@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Todo App{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold mb-0 text-dark">Your Tasks</h4>
+        <button
+                type="button"
+                class="btn btn-primary shadow-sm rounded-pill px-4"
+                data-toggle="modal"
+                data-target="#todoModal"
+        >
+            <i class="fas fa-plus-circle m-1"></i>New Task
+        </button>
+    </div>
+
+    <!-- Flash Alerts -->
+    {% include "includes/_flash_alert.html" %}
+
+    <!-- Todo Table -->
+    {% if todos %}
+    {% for todo in todos %}
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Task</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold">{{ todo.title }}</div>
+                        <small class="text-muted">{{ todo.description|truncate(50) }}</small>
+                    </td>
+                    <td>
+                        {% if todo.is_completed %}
+                        <span class="badge rounded-pill bg-success-subtle text-success border border-success">Completed</span>
+                        {% else %}
+                        <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary-subtle text-secondary border border-secondary">{{ todo.priority }}</span>
+                    </td>
+                    <td class="text-muted small">{{ todo.due_date }}</td>
+                    <td class="text-end pe-4">
+                        <div class="d-flex align-items-center justify-content-start">
+                            <!-- Complete Toggle -->
+                            <form method="POST" action="{{ url_for('todo.update_todo', todo_id=todo.id) }}"
+                                  class="mr-2">
+                                <input type="hidden" name="is_completed" value="true">
+                                <button type="submit"
+                                        class="btn btn-link text-success p-1"
+                                        data-toggle="tooltip"
+                                        title="Mark as Completed"
+                                        data-placement="top">
+                                    <i class="fas fa-check-circle fa-lg"></i>
+                                </button>
+                            </form>
+
+                            <!-- Edit -->
+                            <span data-toggle="tooltip" title="Edit Task" data-placement="top">
+                                <button class="btn btn-link text-primary p-1 mr-2"
+                                        data-toggle="modal"
+                                        data-target="#todoModal"
+                                        data-id="{{ todo.id }}"
+                                        data-title="{{ todo.title }}"
+                                        data-description="{{ todo.description }}"
+                                        data-priority="{{ todo.priority }}"
+                                        data-due_date="{{ todo.due_date }}">
+                                    <i class="fas fa-edit fa-lg"></i>
+                                </button>
+                            </span>
+
+                            <!-- Delete -->
+                            <span data-toggle="tooltip" title="Delete Task" data-placement="top">
+                                <button class="btn btn-link text-danger p-1"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                        data-id="{{ todo.id }}"
+                                        data-toggle-tooltip="tooltip"
+                                        title="Delete Task"
+                                        data-placement="top">
+                                    <i class="fas fa-trash-alt fa-lg"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center text-muted py-5 border rounded bg-light shadow-sm">
+        <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+        <p class="fs-5">No tasks found. Start by adding a new todo!</p>
+    </div>
+    {% endif %}
+</div>
+
+{% include "todo/todo_modal.html" %}
+{% include "includes/_delete_modal.html" %}
+
+<script>
+    $(function () {
+        // Initialize all tooltips on the page
+        $('[data-toggle="tooltip"]').tooltip({
+            boundary: 'window',
+            trigger: 'hover'
+        });
+
+        // Hide tooltip when a button is clicked (prevents "sticky" tooltips)
+        $('.btn').on('click', function () {
+            $(this).tooltip('hide');
+        });
+    });
+
+    $(document).ready(function() {
+        // Handling the Todo Modal (Add vs Edit)
+        $('#todoModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var todoId = button.data('id');
+
+            var modal = $(this);
+            var form = modal.find('#todo-form');
+            var title = modal.find('.modal-title');
+
+            if (todoId) {
+                // EDIT MODE
+                title.text('Update Task');
+
+                var baseUrl = "{{ url_for('todo.update_todo', todo_id='0') }}";
+                var finalUrl = baseUrl.replace('0', todoId);
+                form.attr('action', finalUrl);
+
+                modal.find('#todo-id').val(todoId);
+                modal.find('#title').val(button.data('title'));
+                modal.find('#description').val(button.data('description'));
+                modal.find('#priority').val(button.data('priority'));
+                modal.find('#due_date').val(button.data('due_date'));
+            } else {
+                // ADD MODE
+                title.text('Create New Task');
+                form.attr('action', "{{ url_for('todo.create_todo') }}");
+
+                if(form[0]) form[0].reset();
+                modal.find('#todo-id').val('');
+            }
+        });
+
+        // Form Submission UI Logic
+        $('#todo-form').on('submit', function() {
+            var btn = $(this).find('button[type="submit"]');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span>Saving...');
+        });
+    });
+
+    // Handling the Delete Modal
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var todoId = button.data('id');
+        var modal = $(this);
+
+        // Generate Delete URL using placeholder
+        var baseUrl = "{{ url_for('todo.delete_todo', todo_id='0') }}";
+        var finalUrl = baseUrl.replace('0', todoId);
+
+        // Set the action on the confirmation form inside the delete modal
+        modal.find('form').attr('action', finalUrl);
+    });
+</script>
+{% endblock %}
+

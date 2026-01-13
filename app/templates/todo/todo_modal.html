@@ -1,0 +1,49 @@
+<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <!-- Form action will be dynamically set by JS -->
+    <form method="POST" id="todo-form" class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-light border-0 py-3">
+        <h5 class="modal-title font-weight-bold text-dark" id="modal-title">Add Todo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="text-dark">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body p-4">
+        <input type="hidden" name="todo_id" id="todo-id">
+
+        <div class="form-group mb-4">
+          <label for="title" class="font-weight-bold small text-uppercase text-muted">Task Title</label>
+          <input type="text" class="form-control border-0 bg-light py-4" name="title" id="title" placeholder="What needs to be done?" required>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="description" class="font-weight-bold small text-uppercase text-muted">Description</label>
+          <textarea class="form-control border-0 bg-light" name="description" id="description" rows="3" placeholder="Add some details..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="col-md-6 form-group">
+            <label for="priority" class="font-weight-bold small text-uppercase text-muted">Priority</label>
+            <select class="form-control border-0 bg-light custom-select" name="priority" id="priority">
+              <option value="1">1 (High)</option>
+              <option value="2">2</option>
+              <option value="3" selected>3 (Normal)</option>
+              <option value="4">4</option>
+              <option value="5">5 (Low)</option>
+            </select>
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="due_date" class="font-weight-bold small text-uppercase text-muted">Due Date</label>
+            <input type="date" name="due_date" class="form-control border-0 bg-light" id="due_date">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 p-4">
+        <button type="button" class="btn btn-light font-weight-bold px-4" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary font-weight-bold px-4 shadow-sm" type="submit" id="submit-btn">Save Todo</button>
+      </div>
+    </form>
+  </div>
+</div>
